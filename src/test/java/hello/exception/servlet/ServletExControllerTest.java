@@ -1,68 +1,86 @@
 package hello.exception.servlet;
 
-import org.assertj.core.api.AbstractThrowableAssert;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ServletExControllerTest {
-    private MockMvc mvc;
-    @BeforeEach
-    void setUp() {
-        mvc = MockMvcBuilders.standaloneSetup(new ServletExController()).build();
-    }
+
+    @LocalServerPort
+    private int port;
 
     @Test
     void errorExTest() {
         //given
         String url = "/error-ex";
+        String errorPageUrl = "/error-page/500";
+
+        HttpStatus expectedStatus = INTERNAL_SERVER_ERROR;
+        String expectedBody = getResponseEntity(errorPageUrl).getBody();
+
+        //when
+        ResponseEntity<String> responseEntity = getResponseEntity(url);
+
+        HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
+        String actualBody = responseEntity.getBody();
 
         //then
-        assertThatThrownBy(() -> {
-            //when
-            mvc.perform(get(url))
-                    .andExpect(status().is5xxServerError());
-        }).hasCauseInstanceOf(RuntimeException.class);
+        assertThat(actualStatusCode).isEqualTo(expectedStatus);
+        assertThat(actualBody).isEqualTo(expectedBody);
     }
 
     @Test
-    void error404Test() throws Exception {
+    void error404Test() {
         //given
         String url = "/error-404";
+        String errorPageUrl = "/error-page/404";
+
+        HttpStatus expectedStatus = NOT_FOUND;
+        String expectedBody = getResponseEntity(errorPageUrl).getBody();
 
         //when
-        String errorMessage = mvc.perform(get(url))
-                .andDo(print())
-                .andExpect(status().isNotFound())
-                .andReturn()
-                .getResponse()
-                .getErrorMessage();
+        ResponseEntity<String> responseEntity = getResponseEntity(url);
+
+        HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
+        String actualBody = responseEntity.getBody();
 
         //then
-        Assertions.assertThat(errorMessage).isEqualTo("404 오류");
+        assertThat(actualStatusCode).isEqualTo(expectedStatus);
+        assertThat(actualBody).isEqualTo(expectedBody);
     }
 
     @Test
-    void error500Test() throws Exception {
+    void error500Test() {
         //given
         String url = "/error-500";
+        String errorPageUrl = "/error-page/500";
+
+        HttpStatus expectedStatus = INTERNAL_SERVER_ERROR;
+        String expectedBody = getResponseEntity(errorPageUrl).getBody();
 
         //when
-        mvc.perform(get(url))
-                .andExpect(status().is5xxServerError());
+        ResponseEntity<String> responseEntity = getResponseEntity(url);
+
+        HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
+        String actualBody = responseEntity.getBody();
 
         //then
+        assertThat(actualStatusCode).isEqualTo(expectedStatus);
+        assertThat(actualBody).isEqualTo(expectedBody);
+    }
+
+    private ResponseEntity<String> getResponseEntity(String url) {
+        return new TestRestTemplate()
+                .getForEntity("http://localhost:%d%s".formatted(port, url), String.class);
     }
 }
