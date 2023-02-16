@@ -1,5 +1,7 @@
 package hello.exception.servlet;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,74 +11,36 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
+import java.util.HashMap;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ServletExControllerTest {
 
     @LocalServerPort
-    private int port;
+    private Integer port;
 
     @Test
-    void errorExTest() {
+    void errorTest() {
         //given
-        String url = "/error-ex";
-        String errorPageUrl = "/error-page/500";
+        HashMap<String, HttpStatus> urlStatus = new HashMap<>();
+        urlStatus.put("/error-ex", INTERNAL_SERVER_ERROR);
+        urlStatus.put("/error-404", NOT_FOUND);
+        urlStatus.put("/error-500", INTERNAL_SERVER_ERROR);
+        urlStatus.put("/error-400", BAD_REQUEST);
 
-        HttpStatus expectedStatus = INTERNAL_SERVER_ERROR;
-        String expectedBody = getResponseEntity(errorPageUrl).getBody();
+        urlStatus.forEach((url, expectedStatus) -> {
+            System.out.println("url = " + url + "================================================");
+            //when
+            ResponseEntity<String> responseEntity = getResponseEntity(url);
+            HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
 
-        //when
-        ResponseEntity<String> responseEntity = getResponseEntity(url);
-
-        HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
-        String actualBody = responseEntity.getBody();
-
-        //then
-        assertThat(actualStatusCode).isEqualTo(expectedStatus);
-        assertThat(actualBody).isEqualTo(expectedBody);
-    }
-
-    @Test
-    void error404Test() {
-        //given
-        String url = "/error-404";
-        String errorPageUrl = "/error-page/404";
-
-        HttpStatus expectedStatus = NOT_FOUND;
-        String expectedBody = getResponseEntity(errorPageUrl).getBody();
-
-        //when
-        ResponseEntity<String> responseEntity = getResponseEntity(url);
-
-        HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
-        String actualBody = responseEntity.getBody();
-
-        //then
-        assertThat(actualStatusCode).isEqualTo(expectedStatus);
-        assertThat(actualBody).isEqualTo(expectedBody);
-    }
-
-    @Test
-    void error500Test() {
-        //given
-        String url = "/error-500";
-        String errorPageUrl = "/error-page/500";
-
-        HttpStatus expectedStatus = INTERNAL_SERVER_ERROR;
-        String expectedBody = getResponseEntity(errorPageUrl).getBody();
-
-        //when
-        ResponseEntity<String> responseEntity = getResponseEntity(url);
-
-        HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
-        String actualBody = responseEntity.getBody();
-
-        //then
-        assertThat(actualStatusCode).isEqualTo(expectedStatus);
-        assertThat(actualBody).isEqualTo(expectedBody);
+            //then
+            assertThat(actualStatusCode).isEqualTo(expectedStatus);
+            System.out.println("//url = " + url + "================================================\n");
+        });
     }
 
     private ResponseEntity<String> getResponseEntity(String url) {

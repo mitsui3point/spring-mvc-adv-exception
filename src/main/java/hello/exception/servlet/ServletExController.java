@@ -24,6 +24,11 @@ public class ServletExController {
         response.sendError(NOT_FOUND.value(), "404 오류");
     }
 
+    @GetMapping("/error-400")
+    public void error400(HttpServletResponse response) throws IOException {
+        response.sendError(BAD_REQUEST.value(), "400 오류");
+    }
+
     @GetMapping("/error-500")
     public void error500(HttpServletResponse response) throws IOException {
         response.sendError(INTERNAL_SERVER_ERROR.value());
