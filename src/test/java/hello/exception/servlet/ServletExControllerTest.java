@@ -1,50 +1,70 @@
 package hello.exception.servlet;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import hello.exception.TestRestTemplateExchanger;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
-import java.util.HashMap;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ServletExControllerTest {
+public class ServletExControllerTest extends TestRestTemplateExchanger {
 
     @LocalServerPort
     private Integer port;
 
-    @Test
-    void errorTest() {
-        //given
-        HashMap<String, HttpStatus> urlStatus = new HashMap<>();
-        urlStatus.put("/error-ex", INTERNAL_SERVER_ERROR);
-        urlStatus.put("/error-404", NOT_FOUND);
-        urlStatus.put("/error-500", INTERNAL_SERVER_ERROR);
-        urlStatus.put("/error-400", BAD_REQUEST);
-
-        urlStatus.forEach((url, expectedStatus) -> {
-            System.out.println("url = " + url + "================================================");
-            //when
-            ResponseEntity<String> responseEntity = getResponseEntity(url);
-            HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
-
-            //then
-            assertThat(actualStatusCode).isEqualTo(expectedStatus);
-            System.out.println("//url = " + url + "================================================\n");
-        });
+    @Override
+    public void addHeader(HttpHeaders headers) {
+        headers.setAccept(Collections.singletonList(MediaType.TEXT_HTML));
     }
 
-    private ResponseEntity<String> getResponseEntity(String url) {
-        return new TestRestTemplate()
-                .getForEntity("http://localhost:%d%s".formatted(port, url), String.class);
+    @Test
+    void errorExTest() {
+        //given
+        String expectedBody = getResponseEntity("/error-page/500", HttpMethod.GET, port).getBody();
+
+        //when
+        ResponseEntity<String> responseEntity = getResponseEntity("/error-ex", HttpMethod.GET, port);
+        HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
+        String actualBody = responseEntity.getBody();
+
+        //then
+        assertThat(actualStatusCode).isEqualTo(INTERNAL_SERVER_ERROR);
+        assertThat(actualBody).isEqualTo(expectedBody);
+    }
+
+    @Test
+    void error404Test() {
+        //given
+        String expectedBody = getResponseEntity("/error-page/404", HttpMethod.GET, port).getBody();
+
+        //when
+        ResponseEntity<String> responseEntity = getResponseEntity("/error-404", HttpMethod.GET, port);
+        HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
+        String actualBody = responseEntity.getBody();
+
+        //then
+        assertThat(actualStatusCode).isEqualTo(NOT_FOUND);
+        assertThat(actualBody).isEqualTo(expectedBody);
+    }
+
+    @Test
+    void error500Test() {
+        //given
+        String expectedBody = getResponseEntity("/error-page/500", HttpMethod.GET, port).getBody();
+
+        //when
+        ResponseEntity<String> responseEntity = getResponseEntity("/error-500", HttpMethod.GET, port);
+        HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
+        String actualBody = responseEntity.getBody();
+
+        //then
+        assertThat(actualStatusCode).isEqualTo(INTERNAL_SERVER_ERROR);
+        assertThat(actualBody).isEqualTo(expectedBody);
     }
 }
