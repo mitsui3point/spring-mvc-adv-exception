@@ -31,6 +31,6 @@ public class BadRequestExceptionTest extends TestRestTemplateExchanger {
         HttpStatusCode actualStatusCode = response.getStatusCode();
 
         //then
-        assertThat(actualStatusCode).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(actualStatusCode).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }

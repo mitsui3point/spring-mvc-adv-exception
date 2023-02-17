@@ -39,9 +39,7 @@ public class UserExceptionTest extends TestRestTemplateExchanger {
         ResponseEntity<String> response = getResponseEntity(url, GET, port);
         Map actualBody = new ObjectMapper().readValue(response.getBody(), HashMap.class);
         //then
-        assertThat(actualBody).extracting("status").isEqualTo(500);
-        assertThat(actualBody).extracting("error").isEqualTo("Internal Server Error");
-        assertThat(actualBody).extracting("exception").isEqualTo("hello.exception.exception.UserException");
-        assertThat(actualBody).extracting("path").isEqualTo(url);
+        assertThat(actualBody).extracting("ex").isEqualTo("hello.exception.exception.UserException");
+        assertThat(actualBody).extracting("message").isEqualTo("사용자 오류");
     }
 }
