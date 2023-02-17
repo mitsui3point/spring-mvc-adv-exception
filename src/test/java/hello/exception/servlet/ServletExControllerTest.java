@@ -29,7 +29,6 @@ public class ServletExControllerTest extends TestRestTemplateExchanger {
         //when
         ResponseEntity<String> responseEntity = getResponseEntity("/error-ex", HttpMethod.GET, port);
         HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
-        String actualBody = responseEntity.getBody();
 
         //then
         assertThat(actualStatusCode).isEqualTo(INTERNAL_SERVER_ERROR);
@@ -42,7 +41,6 @@ public class ServletExControllerTest extends TestRestTemplateExchanger {
         //when
         ResponseEntity<String> responseEntity = getResponseEntity("/error-404", HttpMethod.GET, port);
         HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
-        String actualBody = responseEntity.getBody();
 
         //then
         assertThat(actualStatusCode).isEqualTo(NOT_FOUND);
@@ -55,7 +53,6 @@ public class ServletExControllerTest extends TestRestTemplateExchanger {
         //when
         ResponseEntity<String> responseEntity = getResponseEntity("/error-500", HttpMethod.GET, port);
         HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
-        String actualBody = responseEntity.getBody();
 
         //then
         assertThat(actualStatusCode).isEqualTo(INTERNAL_SERVER_ERROR);

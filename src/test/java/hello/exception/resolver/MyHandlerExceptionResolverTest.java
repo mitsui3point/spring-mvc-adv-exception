@@ -26,14 +26,12 @@ public class MyHandlerExceptionResolverTest extends TestRestTemplateExchanger {
     @Override
     public void addHeader(HttpHeaders headers) {
         headers.setAccept(of(APPLICATION_JSON));
-//        headers.setAccept(of(TEXT_HTML));
     }
 
     @Test
     void getMemberIllegalArgumentExceptionTest() throws Exception {
         //given
         String url = "/api/members/" + "bad";
-        //String expectedBody = "{\"message\":\"Request processing failed: java.lang.RuntimeException: 잘못된 사용자\",\"status\":500}";
 
         //when
         HashMap actualBody = new ObjectMapper().readValue(
