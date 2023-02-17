@@ -32,7 +32,7 @@ public class ApiControllerTest extends TestRestTemplateExchanger {
     }
 
     @Test
-    void getMemberTest() throws Exception {
+    void getMemberTest() {
         //given
         String url = "/api/members/" + "user1";
         String expectedBody = "{\"memberId\":\"user1\",\"name\":\"hello user1\"}";
@@ -65,5 +65,4 @@ public class ApiControllerTest extends TestRestTemplateExchanger {
         assertThat(actualBody).extracting("exception").isEqualTo("java.lang.RuntimeException");
         assertThat(actualBody).extracting("path").isEqualTo("/api/members/ex");
     }
-
 }
