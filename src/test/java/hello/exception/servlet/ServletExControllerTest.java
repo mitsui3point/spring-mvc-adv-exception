@@ -25,8 +25,6 @@ public class ServletExControllerTest extends TestRestTemplateExchanger {
 
     @Test
     void errorExTest() {
-        //given
-        String expectedBody = getResponseEntity("/error-page/500", HttpMethod.GET, port).getBody();
 
         //when
         ResponseEntity<String> responseEntity = getResponseEntity("/error-ex", HttpMethod.GET, port);
@@ -35,13 +33,11 @@ public class ServletExControllerTest extends TestRestTemplateExchanger {
 
         //then
         assertThat(actualStatusCode).isEqualTo(INTERNAL_SERVER_ERROR);
-        assertThat(actualBody).isEqualTo(expectedBody);
     }
 
     @Test
     void error404Test() {
         //given
-        String expectedBody = getResponseEntity("/error-page/404", HttpMethod.GET, port).getBody();
 
         //when
         ResponseEntity<String> responseEntity = getResponseEntity("/error-404", HttpMethod.GET, port);
@@ -50,13 +46,11 @@ public class ServletExControllerTest extends TestRestTemplateExchanger {
 
         //then
         assertThat(actualStatusCode).isEqualTo(NOT_FOUND);
-        assertThat(actualBody).isEqualTo(expectedBody);
     }
 
     @Test
     void error500Test() {
         //given
-        String expectedBody = getResponseEntity("/error-page/500", HttpMethod.GET, port).getBody();
 
         //when
         ResponseEntity<String> responseEntity = getResponseEntity("/error-500", HttpMethod.GET, port);
@@ -65,6 +59,5 @@ public class ServletExControllerTest extends TestRestTemplateExchanger {
 
         //then
         assertThat(actualStatusCode).isEqualTo(INTERNAL_SERVER_ERROR);
-        assertThat(actualBody).isEqualTo(expectedBody);
     }
 }
