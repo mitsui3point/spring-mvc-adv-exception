@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorView
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
@@ -22,7 +21,7 @@ import static org.springframework.http.HttpMethod.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ApiControllerTest extends TestRestTemplateExchanger {
+public class ApiExceptionControllerTest extends TestRestTemplateExchanger {
     @LocalServerPort
     private Integer port;
 
