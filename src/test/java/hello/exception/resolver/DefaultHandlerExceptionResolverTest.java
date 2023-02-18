@@ -6,24 +6,18 @@ import hello.exception.TestRestTemplateExchanger;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DefaultHandlerExceptionResolverTest extends TestRestTemplateExchanger {
 
-    @LocalServerPort
-    private Integer port;
 
     @Override
     public void addHeader(HttpHeaders headers) {
@@ -41,7 +35,7 @@ public class DefaultHandlerExceptionResolverTest extends TestRestTemplateExchang
          * {@link DefaultHandlerExceptionResolver#doResolveException(HttpServletRequest, HttpServletResponse, Object, Exception)}
          * => else if (ex instanceof TypeMismatchException) {
          */
-        ResponseEntity<String> response = getResponseEntity(url, HttpMethod.GET, port);
+        ResponseEntity<String> response = getResponseEntity(url, HttpMethod.GET);
         HttpStatusCode actualStatusCode = response.getStatusCode();
         Map actualBody = new ObjectMapper().readValue(response.getBody(), HashMap.class);
 

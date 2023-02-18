@@ -2,8 +2,6 @@ package hello.exception.servlet;
 
 import hello.exception.TestRestTemplateExchanger;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 
 import java.util.Collections;
@@ -12,11 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ServletExControllerTest extends TestRestTemplateExchanger {
-
-    @LocalServerPort
-    private Integer port;
 
     @Override
     public void addHeader(HttpHeaders headers) {
@@ -27,7 +21,7 @@ public class ServletExControllerTest extends TestRestTemplateExchanger {
     void errorExTest() {
 
         //when
-        ResponseEntity<String> responseEntity = getResponseEntity("/error-ex", HttpMethod.GET, port);
+        ResponseEntity<String> responseEntity = getResponseEntity("/error-ex", HttpMethod.GET);
         HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
 
         //then
@@ -39,7 +33,7 @@ public class ServletExControllerTest extends TestRestTemplateExchanger {
         //given
 
         //when
-        ResponseEntity<String> responseEntity = getResponseEntity("/error-404", HttpMethod.GET, port);
+        ResponseEntity<String> responseEntity = getResponseEntity("/error-404", HttpMethod.GET);
         HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
 
         //then
@@ -51,7 +45,7 @@ public class ServletExControllerTest extends TestRestTemplateExchanger {
         //given
 
         //when
-        ResponseEntity<String> responseEntity = getResponseEntity("/error-500", HttpMethod.GET, port);
+        ResponseEntity<String> responseEntity = getResponseEntity("/error-500", HttpMethod.GET);
         HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
 
         //then

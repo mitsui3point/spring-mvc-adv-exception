@@ -3,25 +3,17 @@ package hello.exception.resolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hello.exception.TestRestTemplateExchanger;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.rsocket.server.LocalRSocketServerPort;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 
 import java.util.HashMap;
-import java.util.List;
 
-import static java.util.List.*;
+import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.MediaType.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class MyHandlerExceptionResolverTest extends TestRestTemplateExchanger {
 
-    @LocalServerPort
-    private Integer port;
 
     @Override
     public void addHeader(HttpHeaders headers) {
@@ -35,7 +27,7 @@ public class MyHandlerExceptionResolverTest extends TestRestTemplateExchanger {
 
         //when
         HashMap actualBody = new ObjectMapper().readValue(
-                getResponseEntity(url, GET, port).getBody(),
+                getResponseEntity(url, GET).getBody(),
                 HashMap.class
         );
 

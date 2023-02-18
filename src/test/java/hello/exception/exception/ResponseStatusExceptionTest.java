@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hello.exception.TestRestTemplateExchanger;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.MessageSource;
 import org.springframework.http.*;
 
@@ -18,10 +16,7 @@ import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ResponseStatusExceptionTest extends TestRestTemplateExchanger {
-    @LocalServerPort
-    private Integer port;
 
     @Autowired
     private MessageSource messageSource;
@@ -39,7 +34,7 @@ public class ResponseStatusExceptionTest extends TestRestTemplateExchanger {
         String exceptedException = "org.springframework.web.server.ResponseStatusException";
 
         //when
-        ResponseEntity<String> response = getResponseEntity(url, HttpMethod.GET, port);
+        ResponseEntity<String> response = getResponseEntity(url, HttpMethod.GET);
         HttpStatusCode actualStatusCode = response.getStatusCode();
         Map actualBody = new ObjectMapper().readValue(response.getBody(), HashMap.class);
 

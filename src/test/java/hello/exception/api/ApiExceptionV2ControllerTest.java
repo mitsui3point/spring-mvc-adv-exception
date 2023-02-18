@@ -3,14 +3,8 @@ package hello.exception.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hello.exception.TestRestTemplateExchanger;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
-import org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorViewResolver;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -24,12 +18,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ApiExceptionV2ControllerTest extends TestRestTemplateExchanger {
 
-    @LocalServerPort
-    private Integer port;
-    
+
     @Override
     public void addHeader(HttpHeaders headers) {
         headers.setAccept(of(APPLICATION_JSON));
@@ -43,7 +34,7 @@ public class ApiExceptionV2ControllerTest extends TestRestTemplateExchanger {
         String expectedBody = "{\"memberId\":\"user1\",\"name\":\"hello user1\"}";
 
         //when
-        String actualBody = getResponseEntity(url, GET, port).getBody();
+        String actualBody = getResponseEntity(url, GET).getBody();
         //then
         assertThat(actualBody).isEqualTo(expectedBody);
     }
@@ -55,7 +46,7 @@ public class ApiExceptionV2ControllerTest extends TestRestTemplateExchanger {
         String url = "/api2/members/" + "ex";
 
         //when
-        ResponseEntity<String> responseEntity = getResponseEntity(url, GET, port);
+        ResponseEntity<String> responseEntity = getResponseEntity(url, GET);
         HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
         Map actualBody = new ObjectMapper().readValue(
                 responseEntity.getBody(),
@@ -74,7 +65,7 @@ public class ApiExceptionV2ControllerTest extends TestRestTemplateExchanger {
         //given
         String url = "/api2/members/" + "bad";
         //when
-        ResponseEntity<String> responseEntity = getResponseEntity(url, GET, port);
+        ResponseEntity<String> responseEntity = getResponseEntity(url, GET);
         HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
         Map actualBody = new ObjectMapper().readValue(
                 responseEntity.getBody(),
@@ -93,7 +84,7 @@ public class ApiExceptionV2ControllerTest extends TestRestTemplateExchanger {
         //given
         String url = "/api2/members/user-ex";
         //when
-        ResponseEntity<String> responseEntity = getResponseEntity(url, GET, port);
+        ResponseEntity<String> responseEntity = getResponseEntity(url, GET);
         HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
         Map actualBody = new ObjectMapper().readValue(
                 responseEntity.getBody(),
