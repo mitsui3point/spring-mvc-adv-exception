@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,8 +39,13 @@ public class ApiExceptionControllerTest extends TestRestTemplateExchanger {
         String expectedBody = "{\"memberId\":\"user1\",\"name\":\"hello user1\"}";
 
         //when
-        String actualBody = getResponseEntity(url, GET, port).getBody();
+        ResponseEntity<String> responseEntity = getResponseEntity(url, GET, port);
+
+        HttpStatusCode actualStatusCode = responseEntity.getStatusCode();
+        String actualBody = responseEntity.getBody();
+
         //then
+        assertThat(actualStatusCode).isEqualTo(HttpStatus.OK);
         assertThat(actualBody).isEqualTo(expectedBody);
     }
 
